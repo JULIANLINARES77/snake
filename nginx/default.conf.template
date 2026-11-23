@@ -1,0 +1,9 @@
+# Nginx escucha el puerto que Render entrega mediante la variable PORT.
+server {
+    listen ${PORT};
+    server_name _;
+
+    # La carpeta contiene únicamente los archivos del frontend que se copiaron en la imagen.
+    root /usr/share/nginx/html;
+    index index.html;
+}

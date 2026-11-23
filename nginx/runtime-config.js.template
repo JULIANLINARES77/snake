@@ -1,0 +1,5 @@
+// Render rellena estas variables al iniciar el contenedor; la clave debe ser publicable.
+window.APP_CONFIG = Object.freeze({
+    supabaseUrl: "${SUPABASE_URL}",
+    supabaseAnonKey: "${SUPABASE_ANON_KEY}"
+});

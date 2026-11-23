@@ -1,0 +1,7 @@
+# Configuración local y artefactos que no deben entrar al repositorio.
+runtime-config.js
+.env
+.env.*
+!.env.example
+node_modules/
+npm-debug.log*

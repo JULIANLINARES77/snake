@@ -1,0 +1,8 @@
+# Evitamos enviar credenciales y archivos innecesarios al contexto de construcción.
+DatabaseInit.js
+node_modules/
+.git/
+*.docx
+runtime-config.js
+.env
+.env.*

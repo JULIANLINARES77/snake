@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Declaramos idioma, caracteres y escala para que el sitio se muestre bien en distintos dispositivos. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Caza Ratones</title>
+    <!-- La presentación visual vive separada de la estructura HTML. -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Render genera este archivo al arrancar; en local se crea desde runtime-config.example.js. -->
+    <script src="runtime-config.js"></script>
+    <!-- Supabase JS ofrece el cliente que auth.js utiliza en el navegador. -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <main id="app-container">
+        <!-- Primera pantalla: presenta el juego y permite entrar o crear una cuenta. -->
+        <section id="login-screen" class="pantalla auth-layout">
+            <div class="auth-intro">
+                <div class="brand-mark" aria-hidden="true">🐍</div>
+                <p class="eyebrow">Una aventura para jugar</p>
+                <h1>Snake <span>Caza Ratones</span></h1>
+                <p class="intro-copy">Afina tus reflejos, persigue cada ratoncito y supera tu propio récord.</p>
+                <div class="intro-decoration" aria-hidden="true">
+                    <span class="decoration-snake">● ━ ● ━ ●</span>
+                    <span class="decoration-mouse">🐭</span>
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <div class="auth-card-heading">
+                    <p class="eyebrow">Tu próxima partida empieza aquí</p>
+                    <h2>¡Qué bueno verte!</h2>
+                    <p>Accede a tu cuenta o crea una nueva para guardar tu récord.</p>
+                </div>
+
+                <div class="auth-tabs" role="tablist" aria-label="Acceso a tu cuenta">
+                    <button id="tab-login" class="auth-tab active" type="button" role="tab"
+                            aria-selected="true" aria-controls="login-form">Iniciar sesión</button>
+                    <button id="tab-register" class="auth-tab" type="button" role="tab"
+                            aria-selected="false" aria-controls="register-form">Crear cuenta</button>
+                </div>
+
+                <form id="login-form" class="auth-form" novalidate>
+                    <label for="input-email">Correo electrónico</label>
+                    <input type="email" id="input-email" placeholder="tu@correo.com"
+                           autocomplete="email" required>
+
+                    <label for="input-password">Contraseña</label>
+                    <input type="password" id="input-password" placeholder="Tu contraseña"
+                           autocomplete="current-password" required>
+
+                    <button id="btn-login" class="btn primary" type="submit">Entrar a jugar <span aria-hidden="true">→</span></button>
+                </form>
+
+                <form id="register-form" class="auth-form hidden" novalidate>
+                    <label for="input-full-name">Nombre completo</label>
+                    <input type="text" id="input-full-name" placeholder="¿Cómo te llamas?"
+                           autocomplete="name" minlength="2" required>
+
+                    <label for="input-register-email">Correo electrónico</label>
+                    <input type="email" id="input-register-email" placeholder="tu@correo.com"
+                           autocomplete="email" required>
+
+                    <label for="input-register-password">Contraseña</label>
+                    <input type="password" id="input-register-password" placeholder="Mínimo 6 caracteres"
+                           autocomplete="new-password" minlength="6" required>
+
+                    <label for="input-confirm-password">Confirma tu contraseña</label>
+                    <input type="password" id="input-confirm-password" placeholder="Escríbela de nuevo"
+                           autocomplete="new-password" minlength="6" required>
+
+                    <button id="btn-register" class="btn primary" type="submit">Crear mi cuenta <span aria-hidden="true">→</span></button>
+                </form>
+
+                <p id="auth-error" class="auth-feedback hidden" role="status" aria-live="polite"></p>
+            </div>
+        </section>
+
+        <!-- Menú del jugador: identidad, récord y accesos a la partida. -->
+        <section id="main-menu" class="pantalla menu-screen hidden">
+            <header class="menu-heading">
+                <div class="brand-mark small" aria-hidden="true">🐍</div>
+                <div>
+                    <p class="eyebrow">Snake Caza Ratones</p>
+                    <h1>Menú principal</h1>
+                </div>
+            </header>
+
+            <div class="user-card">
+                <div class="user-avatar" id="user-avatar" aria-hidden="true">J</div>
+                <div class="user-copy">
+                    <p class="eyebrow">¡Bienvenido/a!</p>
+                    <h2 id="user-name">Jugador</h2>
+                    <p id="user-email" class="user-email"></p>
+                </div>
+                <div class="best-score">
+                    <span class="trophy" aria-hidden="true">🏆</span>
+                    <span class="best-score-label">Tu mejor puntaje</span>
+                    <strong><span id="rango-maximo">0</span><small> pts</small></strong>
+                </div>
+            </div>
+
+            <div class="menu-actions">
+                <button id="btn-jugar" class="btn play-btn"><span aria-hidden="true">▶</span> Iniciar juego</button>
+                <button id="btn-config" class="btn secondary">Configuración</button>
+                <button id="btn-logout" class="btn text-btn">Cerrar sesión <span aria-hidden="true">↗</span></button>
+            </div>
+
+            <!-- Este panel deja elegir la velocidad antes de iniciar la siguiente partida. -->
+            <section id="config-panel" class="config-panel hidden" aria-labelledby="config-title">
+                <div class="config-heading">
+                    <p class="eyebrow">Personaliza tu partida</p>
+                    <h2 id="config-title">Velocidad del gusanito</h2>
+                    <p>Elige el ritmo que te resulte más divertido.</p>
+                </div>
+
+                <fieldset class="config-options">
+                    <legend>Dificultad</legend>
+                    <label class="config-option" for="difficulty-easy">
+                        <input type="radio" id="difficulty-easy" name="game-difficulty" value="facil" checked>
+                        <span class="config-option-copy">
+                            <strong>Fácil</strong>
+                            <small>Velocidad normal para jugar con calma.</small>
+                        </span>
+                    </label>
+                    <label class="config-option" for="difficulty-hard">
+                        <input type="radio" id="difficulty-hard" name="game-difficulty" value="dificil">
+                        <span class="config-option-copy">
+                            <strong>Difícil</strong>
+                            <small>El gusanito se mueve al doble de velocidad.</small>
+                        </span>
+                    </label>
+                </fieldset>
+
+                <div class="config-actions">
+                    <button id="btn-config-apply" class="btn primary" type="button">Aplicar configuración</button>
+                    <button id="btn-config-cancel" class="btn secondary" type="button">Cancelar</button>
+                </div>
+                <p id="config-feedback" class="config-feedback hidden" role="status" aria-live="polite"></p>
+            </section>
+
+            <p class="menu-tip"><span aria-hidden="true">✨</span> ¿Listo/a para superar tu récord?</p>
+        </section>
+
+        <!-- Pantalla de juego: encabezado, puntaje, Canvas y resultado final. -->
+        <section id="game-screen" class="pantalla game-screen hidden">
+            <header class="game-header">
+                <div class="game-title">
+                    <div class="brand-mark small" aria-hidden="true">🐍</div>
+                    <div>
+                        <p class="eyebrow">A jugar</p>
+                        <h1>Snake Caza Ratones</h1>
+                    </div>
+                </div>
+                <button id="btn-volver-menu" class="btn secondary back-btn"><span aria-hidden="true">←</span> Menú</button>
+            </header>
+
+            <div class="game-hud">
+                <div class="score-pill">
+                    <span class="score-icon" aria-hidden="true">🐭</span>
+                    <span>Puntaje</span>
+                    <strong id="score-actual">0</strong>
+                </div>
+                <p class="keyboard-hint">Usa las flechas del teclado para moverte</p>
+            </div>
+
+            <div class="game-board">
+                <canvas id="gameCanvas" width="400" height="400" aria-label="Tablero del juego Snake"></canvas>
+
+                <div id="game-over-modal" class="modal hidden">
+                    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="game-over-title">
+                        <span class="game-over-icon" aria-hidden="true">🐭</span>
+                        <p class="eyebrow">Fin de la partida</p>
+                        <h2 id="game-over-title">¡Buen intento!</h2>
+                        <p>Tu puntaje fue <strong id="puntaje-final">0</strong> puntos</p>
+                        <button id="btn-reinicio" class="btn play-btn">Volver a jugar <span aria-hidden="true">↻</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- El punto de entrada coordina autenticación, navegación y motor del juego. -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

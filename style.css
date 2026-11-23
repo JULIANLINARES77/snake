@@ -1,0 +1,877 @@
+/* Colores compartidos: así mantenemos una identidad visual consistente en todas las pantallas. */
+:root {
+    color-scheme: dark;
+    --page-bg: #101a2b;
+    --panel-bg: #1b2940;
+    --panel-raised: #23344e;
+    --text: #f5f8ff;
+    --muted: #a9bad1;
+    --blue: #4d94ff;
+    --blue-dark: #3279e8;
+    --green: #94df50;
+    --line: rgba(209, 227, 255, 0.12);
+    --shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+}
+
+/* El tamaño incluye bordes y rellenos para que las tarjetas mantengan sus medidas previstas. */
+* {
+    box-sizing: border-box;
+}
+
+/* El fondo y la tipografía enmarcan todo el juego sin depender de imágenes externas. */
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    padding: 28px;
+    display: grid;
+    place-items: center;
+    overflow-x: hidden;
+    background:
+        radial-gradient(ellipse at 12% 10%, rgba(52, 112, 190, 0.25), transparent 34rem),
+        radial-gradient(ellipse at 90% 86%, rgba(70, 145, 62, 0.16), transparent 30rem),
+        var(--page-bg);
+    color: var(--text);
+    font-family: Inter, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    color: inherit;
+}
+
+#app-container {
+    width: min(1080px, 100%);
+    margin: auto;
+}
+
+/* Las pantallas se apilan y la clase hidden permite alternarlas desde app.js. */
+.pantalla {
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1,
+h2,
+p {
+    margin-top: 0;
+}
+
+h1,
+h2 {
+    letter-spacing: -0.035em;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: var(--green);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+/* El emblema de la serpiente reutiliza el mismo estilo en acceso, menú y juego. */
+.brand-mark {
+    width: 62px;
+    height: 62px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #5ca2ff, #276fe0);
+    box-shadow: 0 12px 30px rgba(45, 114, 226, 0.32);
+    font-size: 2rem;
+}
+
+.brand-mark.small {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 auto;
+    border-radius: 15px;
+    font-size: 1.55rem;
+}
+
+.auth-layout {
+    min-height: 620px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 0.88fr);
+    align-items: center;
+    gap: clamp(36px, 7vw, 92px);
+}
+
+/* Zona introductoria del acceso: título, descripción y decoración del juego. */
+.auth-intro {
+    position: relative;
+    min-height: 480px;
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-intro .brand-mark {
+    margin-bottom: 42px;
+}
+
+.auth-intro h1 {
+    max-width: 530px;
+    margin-bottom: 22px;
+    font-size: clamp(3.2rem, 6vw, 5.3rem);
+    line-height: 0.98;
+}
+
+.auth-intro h1 span {
+    display: block;
+    color: #82b8ff;
+}
+
+.intro-copy {
+    max-width: 410px;
+    margin-bottom: 0;
+    color: var(--muted);
+    font-size: 1.08rem;
+    line-height: 1.7;
+}
+
+.intro-decoration {
+    position: absolute;
+    right: 12%;
+    bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transform: rotate(-8deg);
+    opacity: 0.82;
+}
+
+.decoration-snake {
+    color: #70aaff;
+    font-size: 2rem;
+    letter-spacing: -0.2em;
+    text-shadow: 0 6px 20px rgba(61, 133, 239, 0.5);
+}
+
+.decoration-mouse {
+    font-size: 2.4rem;
+}
+
+.auth-card {
+    width: 100%;
+    padding: clamp(26px, 4vw, 42px);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    background: linear-gradient(145deg, rgba(35, 52, 78, 0.97), rgba(24, 37, 58, 0.98));
+    box-shadow: var(--shadow);
+}
+
+.auth-card-heading h2 {
+    margin-bottom: 8px;
+    font-size: 2rem;
+}
+
+.auth-card-heading > p:last-child {
+    margin-bottom: 25px;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+/* Pestañas y controles forman un bloque claro para alternar registro e inicio. */
+.auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-bottom: 23px;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: rgba(8, 17, 31, 0.38);
+}
+
+.auth-tab {
+    min-height: 42px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.auth-tab:hover {
+    color: var(--text);
+}
+
+.auth-tab.active {
+    background: #314762;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(4, 12, 24, 0.2);
+}
+
+/* El formulario organiza etiquetas, campos y botones con el mismo ritmo vertical. */
+.auth-form {
+    display: grid;
+    gap: 9px;
+}
+
+.auth-form label {
+    margin-top: 5px;
+    color: #dce8f8;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.auth-form input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid rgba(199, 220, 247, 0.18);
+    border-radius: 11px;
+    outline: none;
+    background: rgba(9, 18, 32, 0.43);
+    color: var(--text);
+    transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.auth-form input::placeholder {
+    color: #8193aa;
+}
+
+.auth-form input:focus {
+    border-color: var(--blue);
+    background: rgba(9, 18, 32, 0.7);
+    box-shadow: 0 0 0 3px rgba(77, 148, 255, 0.16);
+}
+
+.auth-form .btn {
+    margin-top: 17px;
+}
+
+.btn {
+    min-height: 48px;
+    padding: 0 18px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 800;
+    transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.btn:focus-visible,
+.auth-tab:focus-visible {
+    outline: 3px solid rgba(130, 184, 255, 0.75);
+    outline-offset: 3px;
+}
+
+.btn:disabled {
+    cursor: wait;
+    opacity: 0.68;
+}
+
+.btn.primary,
+.play-btn {
+    background: linear-gradient(135deg, #5a9fff, #3179e5);
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(49, 121, 229, 0.23);
+}
+
+.btn.primary:hover:not(:disabled),
+.play-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #72adff, #4188f1);
+    box-shadow: 0 13px 28px rgba(49, 121, 229, 0.34);
+}
+
+/* Un único aviso cambia de tono según el resultado de autenticación. */
+.auth-feedback {
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.auth-feedback[data-tone="error"] {
+    border-color: rgba(255, 126, 126, 0.25);
+    background: rgba(153, 47, 57, 0.2);
+    color: #ffb1b1;
+}
+
+.auth-feedback[data-tone="info"] {
+    border-color: rgba(111, 174, 255, 0.24);
+    background: rgba(54, 105, 165, 0.2);
+    color: #b7d7ff;
+}
+
+.auth-feedback[data-tone="success"] {
+    border-color: rgba(148, 223, 80, 0.24);
+    background: rgba(61, 117, 46, 0.2);
+    color: #c5f09f;
+}
+
+/* Menú y juego comparten tarjeta, bordes y sombra para conservar el mismo estilo. */
+.menu-screen,
+.game-screen {
+    width: min(760px, 100%);
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 48px);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: linear-gradient(145deg, rgba(32, 49, 74, 0.97), rgba(22, 35, 56, 0.98));
+    box-shadow: var(--shadow);
+}
+
+.menu-heading,
+.game-header,
+.game-title {
+    display: flex;
+    align-items: center;
+}
+
+.menu-heading {
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.menu-heading .eyebrow,
+.game-title .eyebrow {
+    margin-bottom: 4px;
+}
+
+.menu-heading h1,
+.game-title h1 {
+    margin: 0;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+/* La tarjeta resume quién juega y cuál es su mejor puntuación. */
+.user-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 23px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(10, 20, 35, 0.38);
+}
+
+.user-avatar {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(143, 190, 255, 0.32);
+    border-radius: 18px;
+    background: linear-gradient(145deg, #518fe7, #315db2);
+    color: #fff;
+    font-size: 1.45rem;
+    font-weight: 900;
+}
+
+.user-copy {
+    min-width: 0;
+}
+
+.user-copy .eyebrow {
+    margin-bottom: 4px;
+}
+
+.user-copy h2 {
+    overflow: hidden;
+    margin: 0 0 4px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1.25rem;
+}
+
+.user-email {
+    overflow: hidden;
+    margin: 0;
+    color: var(--muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.82rem;
+}
+
+.best-score {
+    min-width: 134px;
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    padding-left: 18px;
+    border-left: 1px solid var(--line);
+    text-align: center;
+}
+
+.trophy {
+    font-size: 1.45rem;
+}
+
+.best-score-label {
+    color: var(--muted);
+    font-size: 0.72rem;
+}
+
+.best-score strong {
+    color: #f9d56e;
+    font-size: 1.5rem;
+}
+
+.best-score small {
+    font-size: 0.76rem;
+}
+
+.menu-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.menu-actions .play-btn {
+    min-width: 190px;
+    flex: 1 1 190px;
+}
+
+/* El panel de ajustes aparece debajo de las acciones del menú, sin tapar la pantalla. */
+.config-panel {
+    margin-top: 20px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(10, 20, 35, 0.42);
+}
+
+.config-heading h2 {
+    margin: 0 0 7px;
+    font-size: 1.25rem;
+}
+
+.config-heading > p:last-child {
+    margin-bottom: 0;
+    color: var(--muted);
+}
+
+.config-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+    padding: 0;
+    border: 0;
+}
+
+.config-options legend {
+    margin-bottom: 10px;
+    color: #dce8f8;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.config-option {
+    min-height: 82px;
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.035);
+    cursor: pointer;
+}
+
+.config-option input {
+    margin: 3px 0 0;
+    accent-color: var(--blue);
+}
+
+.config-option-copy {
+    display: grid;
+    gap: 5px;
+}
+
+.config-option-copy small {
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+.config-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.config-feedback {
+    margin: 14px 0 0;
+    color: #c5f09f;
+    font-size: 0.86rem;
+}
+
+.config-feedback[data-tone="error"] {
+    color: #ffb1b1;
+}
+
+.secondary {
+    border-color: var(--line);
+    background: rgba(255, 255, 255, 0.045);
+    color: #d9e7fa;
+}
+
+.secondary:hover:not(:disabled) {
+    border-color: rgba(155, 195, 247, 0.35);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.text-btn {
+    background: transparent;
+    color: var(--muted);
+}
+
+.text-btn:hover:not(:disabled) {
+    color: #fff;
+}
+
+.menu-tip {
+    margin: 26px 0 0;
+    color: var(--muted);
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.menu-tip span {
+    margin-right: 5px;
+}
+
+.game-screen {
+    align-items: center;
+}
+
+.game-header {
+    width: 100%;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.game-title {
+    min-width: 0;
+    gap: 14px;
+}
+
+.game-title h1 {
+    font-size: clamp(1.15rem, 3vw, 1.65rem);
+}
+
+.back-btn {
+    min-height: 42px;
+    flex: 0 0 auto;
+    padding: 0 14px;
+}
+
+/* El HUD separa el puntaje de las instrucciones del teclado. */
+.game-hud {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 24px 0 14px;
+}
+
+.score-pill {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 15px;
+    border: 1px solid rgba(148, 223, 80, 0.22);
+    border-radius: 14px;
+    background: rgba(53, 96, 42, 0.22);
+    color: #daedcd;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.score-icon {
+    font-size: 1.15rem;
+}
+
+.score-pill strong {
+    min-width: 28px;
+    color: #fff;
+    text-align: right;
+    font-size: 1.1rem;
+}
+
+.keyboard-hint {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+    text-align: right;
+}
+
+.game-board {
+    position: relative;
+    width: min(100%, 430px);
+    overflow: hidden;
+    border: 8px solid #347647;
+    border-radius: 18px;
+    background: #9ddd4e;
+    box-shadow: 0 16px 35px rgba(5, 17, 11, 0.3), inset 0 0 0 2px rgba(229, 255, 194, 0.24);
+}
+
+/* El tablero escala con la pantalla y conserva el aspecto pixelado del juego. */
+.game-board canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    image-rendering: pixelated;
+}
+
+/* El modal queda encima del tablero cuando la partida termina. */
+.modal {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(12, 25, 30, 0.68);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    width: min(100%, 300px);
+    padding: 28px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: #1d2e42;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    text-align: center;
+}
+
+.game-over-icon {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 2.25rem;
+}
+
+.modal-content .eyebrow {
+    margin-bottom: 7px;
+}
+
+.modal-content h2 {
+    margin-bottom: 8px;
+    font-size: 1.75rem;
+}
+
+.modal-content > p:not(.eyebrow) {
+    margin-bottom: 22px;
+    color: var(--muted);
+}
+
+.modal-content > p strong {
+    color: #fff;
+}
+
+.modal-content .btn {
+    width: 100%;
+}
+
+@media (max-width: 760px) {
+    /* En tabletas apilamos la introducción y el formulario para ganar espacio. */
+    body {
+        padding: 20px;
+    }
+
+    .auth-layout {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .auth-intro {
+        min-height: 0;
+        padding: 4px 0 0;
+        align-items: center;
+        text-align: center;
+    }
+
+    .auth-intro .brand-mark {
+        width: 52px;
+        height: 52px;
+        margin-bottom: 16px;
+        border-radius: 16px;
+        font-size: 1.65rem;
+    }
+
+    .auth-intro h1 {
+        margin-bottom: 12px;
+        font-size: clamp(2.4rem, 9vw, 3.6rem);
+    }
+
+    .intro-copy {
+        max-width: 460px;
+        font-size: 0.98rem;
+    }
+
+    .intro-decoration {
+        display: none;
+    }
+
+    .auth-card {
+        width: min(500px, 100%);
+        justify-self: center;
+    }
+}
+
+@media (max-width: 540px) {
+    /* En móviles compactamos tarjetas y controles sin perder el orden de lectura. */
+    body {
+        padding: 14px;
+    }
+
+    #app-container {
+        width: 100%;
+    }
+
+    .auth-card {
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+
+    .auth-card-heading h2 {
+        font-size: 1.7rem;
+    }
+
+    .auth-form input {
+        min-height: 46px;
+    }
+
+    .menu-screen,
+    .game-screen {
+        padding: 22px 16px;
+        border-radius: 22px;
+    }
+
+    .menu-heading {
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .user-card {
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 13px;
+        padding: 17px;
+    }
+
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .best-score {
+        grid-column: 1 / -1;
+        grid-template-columns: auto 1fr auto;
+        justify-items: start;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 14px 0 0;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+        text-align: left;
+    }
+
+    .best-score strong {
+        justify-self: end;
+        font-size: 1.25rem;
+    }
+
+    .menu-actions {
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .menu-actions .play-btn {
+        flex-basis: 100%;
+    }
+
+    .menu-actions .secondary,
+    .menu-actions .text-btn {
+        flex: 1;
+    }
+
+    .config-panel {
+        padding: 18px 14px;
+    }
+
+    .config-options {
+        grid-template-columns: 1fr;
+    }
+
+    .config-actions .btn {
+        flex: 1 1 100%;
+    }
+
+    .game-header {
+        align-items: flex-start;
+    }
+
+    .game-title {
+        gap: 9px;
+    }
+
+    .game-title .brand-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 13px;
+        font-size: 1.25rem;
+    }
+
+    .back-btn {
+        min-height: 38px;
+        padding: 0 10px;
+        font-size: 0.84rem;
+    }
+
+    .game-hud {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .keyboard-hint {
+        text-align: left;
+    }
+
+    .game-board {
+        border-width: 6px;
+        border-radius: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Respetamos la preferencia del sistema para reducir transiciones animadas. */
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
